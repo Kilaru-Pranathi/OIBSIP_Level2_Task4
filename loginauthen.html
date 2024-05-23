@@ -1,0 +1,46 @@
+import hashlib
+import secrets
+import getpass
+
+# Dictionary to store user data
+user_data = {}
+
+def register_user():
+    print("\n===== User Registration =====")
+    username = input("Enter your username: ")
+    password = getpass.getpass("Enter your password: ")
+
+    # Generate a random salt
+    salt = secrets.token_hex(16)
+
+    # Hash the password along with the salt
+    hashed_password = hashlib.sha256((password + salt).encode()).hexdigest()
+
+    # Store the user data
+    user_data[username] = {'salt': salt, 'hashed_password': hashed_password}
+    print("\n🚀 Registration successful! Welcome aboard, {}!".format(username))
+
+def login_user():
+    print("\n===== User Login =====")
+    username = input("Enter your username: ")
+    password = getpass.getpass("Enter your password: ")
+
+    if username in user_data:
+        stored_data = user_data[username]
+        hashed_password = hashlib.sha256((password + stored_data['salt']).encode()).hexdigest()
+        if hashed_password == stored_data['hashed_password']:
+            print("\n🎉 Login successful! Welcome back, {}!".format(username))
+            access_secured_page()
+            return
+
+    print("\n⛔️ Invalid username or password. Please try again.")
+
+def access_secured_page():
+    print("\n===== Secured Page =====")
+    print("🔒 Welcome to the secured page!")
+    print("🌟 You are selected for exclusive access!\n")
+
+# Example usage
+if __name__ == "__main__":
+    register_user()
+    login_user()
